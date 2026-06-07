@@ -25,15 +25,22 @@ namespace liblib.Features
 
         public void Awake()
         {
+            if (!PlayerPrefs.HasKey("FOV"))
+            {
+                PlayerPrefs.SetInt("FOV", 60);
+                PlayerPrefs.Save();
+            }
+
             instance = this;
             LabelNumber = PlayerPrefs.GetInt("FOV");
         }
+
         public void LateUpdate()
         {
             // please speed i need this
             var watch = GameObject.Find("PlayerRoot/[Player](Clone)_local/TrackingSpace/WatchMenu/VisualRoot/[PlayerWatchMenu](Clone)");
             if ((watch != null && !watch.activeInHierarchy) && GameObject.Find("PlayerRoot/[Player](Clone)_local/TrackingSpace/ToolMenu") == null)
-                GameObject.Find("GameRoot/Startup/Core Systems/[RR CameraRig]/ScreenModeCamera").GetComponent<Camera>().fieldOfView = LabelNumber;
+                GameObject.Find("GameRoot/Startup/Core Systems/[RR CameraRig]/ScreenModeCamera").GetComponent<Camera>().fieldOfView += LabelNumber - 60;
 
             if (DecrementalButton == null || IncrementalButton == null)
             {

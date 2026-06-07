@@ -9,6 +9,8 @@
 liblib is a group of stuff ive made for the Rec Room Custom Server called Radium
 <br>
 expect little stuff like fov changers and what not
+<br><br>
+**THIS MOD IS NOT A CHEAT AND WILL NEVER BE A CHEAT**
 </p>
 
 ---

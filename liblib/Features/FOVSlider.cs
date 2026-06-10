@@ -37,43 +37,48 @@ namespace liblib.Features
 
         public void LateUpdate()
         {
-            // please speed i need this
-            var watch = GameObject.Find("PlayerRoot/[Player](Clone)_local/TrackingSpace/WatchMenu/VisualRoot/[PlayerWatchMenu](Clone)");
-            if ((watch != null && !watch.activeInHierarchy) && GameObject.Find("PlayerRoot/[Player](Clone)_local/TrackingSpace/ToolMenu") == null)
-                GameObject.Find("GameRoot/Startup/Core Systems/[RR CameraRig]/ScreenModeCamera").GetComponent<Camera>().fieldOfView += LabelNumber - 60;
-
-            if (DecrementalButton == null || IncrementalButton == null)
+            try 
             {
-                var screen = GameObject.Find("PlayerRoot/[Player](Clone)_local/TrackingSpace/WatchMenu/VisualRoot/[PlayerWatchMenu](Clone)/Canvas/Screens/[SettingsScreen](Clone)/Body/[ScreenGameplaySubscreen]");
-                if (screen == null)
-                    return;
+                // please speed i need this
+                var watch = GameObject.Find("PlayerRoot/[Player](Clone)_local/TrackingSpace/WatchMenu/VisualRoot/[PlayerWatchMenu](Clone)");
+                if ((watch != null && !watch.activeInHierarchy) && GameObject.Find("PlayerRoot/[Player](Clone)_local/TrackingSpace/ToolMenu") == null)
+                    GameObject.Find("GameRoot/Startup/Core Systems/[RR CameraRig]/ScreenModeCamera").GetComponent<Camera>().fieldOfView += LabelNumber - 60;
 
-                screen.transform.Find("Rockers/GamepadSensitivity/TitleText").GetComponent<TMPro.TextMeshProUGUI>().text = "Field of View";
-                screen.transform.Find("Rockers/GamepadSensitivity").GetComponent<Tooltip>().Message = "Change Field of View";
+                if (DecrementalButton == null || IncrementalButton == null)
+                {
+                    var screen = GameObject.Find("PlayerRoot/[Player](Clone)_local/TrackingSpace/WatchMenu/VisualRoot/[PlayerWatchMenu](Clone)/Canvas/Screens/[SettingsScreen](Clone)/Body/[ScreenGameplaySubscreen]");
+                    if (screen == null)
+                        return;
 
-                Label = screen.transform.Find("Rockers/GamepadSensitivity/Controls/Label").GetComponent<TMPro.TextMeshProUGUI>();
-                DecrementalButton = screen.transform.Find("Rockers/GamepadSensitivity/Controls/Buttons/DecrementButton").GetComponent<Button3D>();
-                IncrementalButton = screen.transform.Find("Rockers/GamepadSensitivity/Controls/Buttons/IncrementButton").GetComponent<Button3D>();
+                    screen.transform.Find("Rockers/GamepadSensitivity/TitleText").GetComponent<TMPro.TextMeshProUGUI>().text = "Field of View";
+                    screen.transform.Find("Rockers/GamepadSensitivity").GetComponent<Tooltip>().Message = "Change Field of View";
+
+                    Label = screen.transform.Find("Rockers/GamepadSensitivity/Controls/Label").GetComponent<TMPro.TextMeshProUGUI>();
+                    DecrementalButton = screen.transform.Find("Rockers/GamepadSensitivity/Controls/Buttons/DecrementButton").GetComponent<Button3D>();
+                    IncrementalButton = screen.transform.Find("Rockers/GamepadSensitivity/Controls/Buttons/IncrementButton").GetComponent<Button3D>();
+                }
+
+                // i wanna bet this is gonna fuck something up but i dont care
+                if (GameObject.Find("PlayerRoot/[Player](Clone)_local/TrackingSpace/WatchMenu/VisualRoot/[PlayerWatchMenu](Clone)/Canvas/Screens/[SettingsScreen](Clone)/Body/[ScreenGameplaySubscreen]/Rockers/GamepadSensitivity").active == false)
+                    GameObject.Find("PlayerRoot/[Player](Clone)_local/TrackingSpace/WatchMenu/VisualRoot/[PlayerWatchMenu](Clone)/Canvas/Screens/[SettingsScreen](Clone)/Body/[ScreenGameplaySubscreen]/Rockers/GamepadSensitivity").SetActive(true);
+
+                Label.text = LabelNumber.ToString();
+                if (LabelNumber < 30)
+                    LabelNumber = 30;
+                if (LabelNumber > 120)
+                    LabelNumber = 120;
+
+                // stupid buttons
+                DecrementalButton.OnClick = new Button3D.OnButton3DClick();
+                DecrementalButton.OnClick.RemoveAllListeners();
+                DecrementalButton.OnClick.AddListener(new Action(() => { LabelNumber -= 5; PlayerPrefs.SetInt("FOV", LabelNumber); PlayerPrefs.Save(); }));
+
+                IncrementalButton.OnClick = new Button3D.OnButton3DClick();
+                IncrementalButton.OnClick.RemoveAllListeners();
+                IncrementalButton.OnClick.AddListener(new Action(() => { LabelNumber += 5; PlayerPrefs.SetInt("FOV", LabelNumber); PlayerPrefs.Save(); }));
             }
-
-            // i wanna bet this is gonna fuck something up but i dont care
-            if (GameObject.Find("PlayerRoot/[Player](Clone)_local/TrackingSpace/WatchMenu/VisualRoot/[PlayerWatchMenu](Clone)/Canvas/Screens/[SettingsScreen](Clone)/Body/[ScreenGameplaySubscreen]/Rockers/GamepadSensitivity").active == false)
-                GameObject.Find("PlayerRoot/[Player](Clone)_local/TrackingSpace/WatchMenu/VisualRoot/[PlayerWatchMenu](Clone)/Canvas/Screens/[SettingsScreen](Clone)/Body/[ScreenGameplaySubscreen]/Rockers/GamepadSensitivity").SetActive(true);
-
-            Label.text = LabelNumber.ToString();
-            if (LabelNumber < 30)
-                LabelNumber = 30;
-            if (LabelNumber > 120)
-                LabelNumber = 120;
-
-            // stupid buttons
-            DecrementalButton.OnClick = new Button3D.OnButton3DClick();
-            DecrementalButton.OnClick.RemoveAllListeners();
-            DecrementalButton.OnClick.AddListener(new Action(() => { LabelNumber -= 5; PlayerPrefs.SetInt("FOV", LabelNumber); PlayerPrefs.Save(); }));
-
-            IncrementalButton.OnClick = new Button3D.OnButton3DClick();
-            IncrementalButton.OnClick.RemoveAllListeners();
-            IncrementalButton.OnClick.AddListener(new Action(() => { LabelNumber += 5; PlayerPrefs.SetInt("FOV", LabelNumber); PlayerPrefs.Save(); }));
+            catch { }
+            
         }
     }
 }
